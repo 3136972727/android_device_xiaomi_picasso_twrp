@@ -26,7 +26,7 @@ on:
       DEVICE_TREE_URL:
         description: 'DEVICE_TREE_URL'
         required: true
-        default: 'https://github.com/hdzungx/android_device_xiaomi_picasso_twrp.git'
+        default: 'https://github.com/hdzungx/android_device_xiaomi_picasso_recovery.git'
       DEVICE_TREE_BRANCH:
         description: 'DEVICE_TREE_BRANCH'
         required: true
