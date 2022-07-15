@@ -1,0 +1,44 @@
+name: LDCheck
+
+on:
+  workflow_dispatch:
+    inputs:
+      DEVICE_TREE_URL:
+        description: 'DEVICE_TREE_URL'
+        required: true
+        default: 'https://github.com/hdzungx/android_device_xiaomi_picasso_twrp.git'
+      DEVICE_TREE_BRANCH:
+        description: 'DEVICE_TREE_BRANCH'
+        required: true
+        default: 'android-12.1'
+jobs:
+  make:
+    runs-on: ubuntu-18.04
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+        architecture: x64
+        
+    - name: Init environment
+      run: |
+        cd ~
+        python -m pip install wheel
+        python -m pip install protobuf==3.19.4
+        python -m pip install bsdiff4
+        python -m pip install requests
+    - name: LD Check
+      run: |
+        PATH=~/bin:$PATH
+        cd ${{ steps.pwd.outputs.pwd }}
+        git clone ${{ github.event.inputs.DEVICE_TREE_URL }} -b ${{ github.event.inputs.DEVICE_TREE_BRANCH }} ./ldchecktwrp
+        cd ./ldchecktwrp
+        git clone https://github.com/that1/ldcheck.git
+        mv ./ldcheck/{ldcheck,libneeds} ./recovery/root/
+        cd './recovery/root'
+        python ldcheck -p system/lib64:vendor/lib64 -d system/bin/qseecomd
